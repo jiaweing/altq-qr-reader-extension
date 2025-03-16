@@ -51,9 +51,10 @@ function showToast(message, type, options = {}) {
 
     // Add the QR code data
     const textContent = document.createElement("div");
+    textContent.className = "qr-text-content";
     textContent.style.textAlign = "center";
     textContent.style.width = "100%";
-    textContent.innerHTML = code ? `<strong>${code}</strong>` : message;
+    textContent.innerHTML = code ? `${code}` : message;
     container.appendChild(textContent);
 
     previewToast.appendChild(container);
@@ -121,7 +122,6 @@ function captureArea(dimensions) {
   };
 
   try {
-    showToast("Reading QR code...", "");
     browser.runtime
       .sendMessage({
         action: "captureVisibleTab",
@@ -363,6 +363,6 @@ document.addEventListener("keydown", (e) => {
       selection = null;
     }
     isSelecting = false;
-    showToast("Selection mode cancelled", "error");
+    showToast("Exited Selection", "error");
   }
 });

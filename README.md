@@ -1,20 +1,29 @@
 <div align="center">
-  <img src="src/icon.png" alt="QR Code Reader Logo" width="128" height="128">
+  <img src="firefox/icon.png" alt="Alt+Q Logo" width="128" height="128">
   
   # Alt+Q: Offline & Local QR Code Reader Browser Extension
 
   <a href="https://chromewebstore.google.com/detail/mkmmdabdljidjfkmdgklmgjfpkjmgplj" style="margin: 0 10px;">
     <img src="https://developer.chrome.com/static/docs/webstore/branding/image/UV4C4ybeBTsZt43U4xis.png" alt="Available in the Chrome Web Store" height="58">
   </a>
-  <a href="https://addons.mozilla.org/en-US/firefox/addon/offline-local-qr-code-reader/" style="margin: 0 10px;">
+  <a href="https://addons.mozilla.org/en-US/firefox/addon/altq/" style="margin: 0 10px;">
     <img src="https://blog.mozilla.org/addons/files/2020/04/get-the-addon-fx-apr-2020.svg" alt="Get the Firefox Add-on" height="58">
   </a>
 
-<br><br>
-
-</div>
+<br>
 
 A powerful browser extension that allows you to read QR codes directly from web pages without requiring an internet connection. Simply select any area of the webpage containing a QR code, and the extension will decode it instantly.
+
+<br>
+
+  <table>
+    <tr>
+      <td><img src="imgs/1.png" alt="Screenshot 1"></td>
+      <td><img src="imgs/2.png" alt="Screenshot 2"></td>
+    </tr>
+  </table>
+
+</div>
 
 ## Installation
 
@@ -93,3 +102,7 @@ This extension processes everything locally:
 ## Contributing
 
 Feel free to submit issues and enhancement requests!
+
+## To Do
+
+- [ ] Automatic Detection: Click on QR code to open (render boxes over QR code)

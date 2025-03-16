@@ -3,7 +3,7 @@
   "name": "Alt+Q: Offline & Local QR Code Reader",
   "version": "1.0.4",
   "icons": {
-    "128": "../src/icon.png"
+    "128": "icon.png"
   },
   "description": "Read QR codes directly from web pages without requiring an internet connection.",
   "permissions": ["clipboardWrite", "activeTab", "commands"],
@@ -12,15 +12,15 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["../src/fonts/*.woff2"],
+      "resources": ["fonts/*.woff2"],
       "matches": ["<all_urls>"]
     }
   ],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["../src/jsQR.js", "../src/content.js"],
-      "css": ["../src/styles.css"]
+      "js": ["jsQR.js", "content.js"],
+      "css": ["styles.css"]
     }
   ],
   "commands": {

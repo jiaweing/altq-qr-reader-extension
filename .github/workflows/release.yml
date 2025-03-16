@@ -16,22 +16,14 @@ jobs:
         run: |
           mkdir -p dist/chrome
           mkdir -p dist/firefox
-          mkdir -p dist/chrome/src
-          mkdir -p dist/firefox/src
 
-      - name: Copy and Prepare Chrome Files
+      - name: Copy Chrome Files
         run: |
-          cp -r src/* dist/chrome/src/
           cp -r chromium/* dist/chrome/
-          # Fix paths in manifest for packaging
-          sed -i 's/"..\/src\//"src\//g' dist/chrome/manifest.json
 
-      - name: Copy and Prepare Firefox Files
+      - name: Copy Firefox Files
         run: |
-          cp -r src/* dist/firefox/src/
           cp -r firefox/* dist/firefox/
-          # Fix paths in manifest for packaging
-          sed -i 's/"..\/src\//"src\//g' dist/firefox/manifest.json
 
       - name: Create Chrome Package
         run: |

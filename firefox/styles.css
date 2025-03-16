@@ -1,0 +1,191 @@
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/Inter-Regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("fonts/Inter-Medium.woff2") format("woff2");
+}
+
+:root {
+  /* Base colors */
+  --primary: #6366f1;
+  --primary-hover: #4f46e5;
+  --success: #10b981;
+  --error: #ef4444;
+  --text: #1e293b;
+
+  /* UI elements */
+  --radius: 12px;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --transition: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Light mode defaults */
+  --selection-border: rgba(99, 102, 241, 0.3);
+  --selection-bg: rgba(99, 102, 241, 0.1);
+  --selection-hover: rgba(99, 102, 241, 0.15);
+  --toast-text: white;
+  --toast-bg: rgba(0, 0, 0, 0.3);
+  --toast-success-bg: rgba(16, 185, 129, 0.9);
+  --toast-error-bg: rgba(239, 68, 68, 0.9);
+  --overlay-bg: rgba(0, 0, 0, 0.05);
+  --overlay-border: rgba(0, 0, 0, 0.1);
+  --overlay-hover: rgba(0, 0, 0, 0.08);
+  --overlay-active: rgba(0, 0, 0, 0.12);
+  --overlay-text-bg: rgba(255, 255, 255, 0.9);
+  --background: rgba(255, 255, 255, 0.98);
+}
+
+* {
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.qr-selection {
+  position: fixed;
+  border: 2px solid var(--selection-border);
+  background-color: var(--selection-bg);
+  pointer-events: none;
+  z-index: 2147483646;
+  will-change: transform;
+  min-width: 40px;
+  min-height: 40px;
+  border-radius: var(--radius);
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+  transition: all 0.2s var(--transition);
+  backdrop-filter: blur(2px);
+}
+
+.qr-selection:hover {
+  backdrop-filter: blur(4px);
+  background-color: var(--selection-hover);
+}
+
+.qr-selection::after {
+  content: "✨ Read QR code";
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--primary);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  white-space: nowrap;
+  pointer-events: none;
+  font-weight: 500;
+  box-shadow: var(--shadow);
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-4px);
+  }
+}
+
+.qr-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  padding: 8px;
+  border-radius: var(--radius);
+  color: var(--toast-text);
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  z-index: 2147483647;
+  opacity: 0;
+  transform: translateY(20px) scale(0.95);
+  width: 280px;
+  transition: all 0.3s var(--transition);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background-color: var(--toast-bg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.qr-toast.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.qr-toast.success {
+  background-color: var(--toast-success-bg);
+  box-shadow: var(--shadow);
+  color: white;
+}
+
+.qr-toast.error {
+  background-color: var(--toast-error-bg);
+  box-shadow: var(--shadow);
+  color: white;
+}
+
+.qr-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--overlay-bg);
+  border: 1px solid var(--overlay-border);
+  z-index: 2147483645;
+  cursor: crosshair;
+  pointer-events: auto;
+  touch-action: none;
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+  backdrop-filter: blur(2px);
+  transition: all 0.2s var(--transition);
+}
+
+.qr-overlay:hover {
+  backdrop-filter: blur(4px);
+  background-color: var(--overlay-hover);
+}
+
+.qr-overlay:active {
+  cursor: grabbing;
+  backdrop-filter: blur(6px);
+  background-color: var(--overlay-active);
+}
+
+.qr-overlay::before {
+  content: "Click and drag to select QR code";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  background: var(--overlay-text-bg);
+  box-shadow: var(--shadow);
+  opacity: 0;
+  transition: opacity 0.3s var(--transition);
+}
+
+.qr-overlay:hover::before {
+  opacity: 1;
+}
