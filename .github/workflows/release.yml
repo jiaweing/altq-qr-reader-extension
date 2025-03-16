@@ -41,6 +41,8 @@ jobs:
 
       - name: Upload Chrome Extension
         uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: dist/chrome/chrome-extension-${{ format('{0}', github.ref_name) }}.zip
@@ -49,6 +51,8 @@ jobs:
 
       - name: Upload Firefox Extension
         uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: dist/firefox/firefox-extension-${{ format('{0}', github.ref_name) }}.zip
