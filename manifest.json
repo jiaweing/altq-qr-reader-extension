@@ -21,6 +21,7 @@
   "background": {
     "scripts": ["background.js"]
   },
+  "web_accessible_resources": ["fonts/*.woff2"],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
