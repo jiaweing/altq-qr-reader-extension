@@ -2,12 +2,12 @@
   "manifest_version": 2,
   "browser_specific_settings": {
     "gecko": {
-      "id": "{c48e5c3c-9cf8-4a76-816f-8570b2b80717}",
+      "id": "{e13389e3-4509-405d-91cf-019ba467f4aa}",
       "strict_min_version": "58.0"
     }
   },
   "name": "Alt+Q: Offline & Local QR Code Reader",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "icons": {
     "128": "icon.png"
   },
