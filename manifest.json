@@ -25,7 +25,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["jsQR.js", "html2canvas.js", "content.js"],
+      "js": ["jsQR.js", "content.js"],
       "css": ["styles.css"]
     }
   ]

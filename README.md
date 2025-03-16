@@ -36,8 +36,8 @@ A powerful Firefox extension that allows you to read QR codes directly from web 
 ## Technologies Used
 
 - `jsQR.js` - QR code detection and decoding
-- `html2canvas.js` - Web page region capture
 - Firefox WebExtensions API
+- Inter font (Medium and Regular weights) - Clean UI typography
 - Pure JavaScript with no external dependencies for core functionality
 
 ## Permissions
@@ -47,6 +47,15 @@ The extension requires minimal permissions:
 - `clipboardWrite`: For copying decoded QR codes to clipboard
 - `activeTab`: For capturing the selected region
 - `commands`: For keyboard shortcut support
+- `web_accessible_resources`: For loading local font files
+
+## Fonts
+
+The extension uses the Inter font family for its clean, modern typography:
+
+- Inter Medium (500 weight) for UI elements
+- Inter Regular (400 weight) for body text
+- Fonts are locally bundled and served from the extension package
 
 ## Privacy
 
@@ -55,6 +64,8 @@ This extension processes everything locally:
 - No data is sent to external servers
 - QR code processing happens entirely in your browser
 - No tracking or analytics included
+- Fonts are locally bundled and don't make external requests
+- All resources are served from the extension package
 
 ## Contributing
 
