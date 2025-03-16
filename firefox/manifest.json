@@ -1,11 +1,11 @@
 {
   "manifest_version": 2,
-  "name": "QR Code Reader",
-  "version": "1.0.3",
+  "name": "Offline & Local QR Code Reader",
+  "version": "1.0.4",
   "icons": {
     "128": "icon.png"
   },
-  "description": "Offline QR code reader with region selection",
+  "description": "Read QR codes directly from web pages without requiring an internet connection.",
   "applications": {
     "gecko": {
       "id": "qr-reader@example.com",

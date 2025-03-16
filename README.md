@@ -2,9 +2,26 @@
   <img src="icon.png" alt="QR Code Reader Logo" width="128" height="128">
   
   # QR Code Reader Extension
+
+  <a href="https://chromewebstore.google.com/detail/mkmmdabdljidjfkmdgklmgjfpkjmgplj" style="margin: 0 10px;">
+    <img src="https://developer.chrome.com/static/docs/webstore/branding/image/UV4C4ybeBTsZt43U4xis.png" alt="Available in the Chrome Web Store" height="58">
+  </a>
+  <a href="https://addons.mozilla.org/en-US/firefox/addon/offline-local-qr-code-reader/" style="margin: 0 10px;">
+    <img src="https://blog.mozilla.org/addons/files/2020/04/get-the-addon-fx-apr-2020.svg" alt="Get the Firefox Add-on" height="58">
+  </a>
+
+<br><br>
+
 </div>
 
-A powerful browser extension that allows you to read QR codes directly from web pages without requiring an internet connection. Supports both Firefox and Chromium-based browsers (Chrome, Edge, Brave). Simply select any area of the webpage containing a QR code, and the extension will decode it instantly.
+A powerful browser extension that allows you to read QR codes directly from web pages without requiring an internet connection. Simply select any area of the webpage containing a QR code, and the extension will decode it instantly.
+
+## Installation
+
+Install the extension directly from your browser's store:
+
+- **Chrome, Edge, Brave**: Click the Chrome Web Store button above
+- **Firefox**: Click the Firefox Add-on button above
 
 ## Features
 
@@ -15,23 +32,6 @@ A powerful browser extension that allows you to read QR codes directly from web 
 - 🔔 **Visual Feedback**: Toast notifications for all operations
 - 🛡️ **Privacy-Focused**: No data transmission - all processing happens locally
 - 🎯 **Precise Selection**: Visual overlay for accurate QR code targeting
-
-## Releases
-
-Official releases are available on GitHub. Each release includes pre-built extension packages for both Firefox and Chromium-based browsers.
-
-### Downloading Releases
-
-1. Go to the [Releases page](https://github.com/jiaweing/qr-reader-extension/releases)
-2. Download the appropriate zip file for your browser:
-   - `chrome-extension-vX.X.X.zip` for Chromium browsers (Chrome, Edge, Brave)
-   - `firefox-extension-vX.X.X.zip` for Firefox
-
-### Version Compatibility
-
-- Always use the latest stable release
-- Release packages are tested on the latest browser versions
-- Older browser versions may not be supported
 
 ## Development
 
