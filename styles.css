@@ -5,6 +5,24 @@
   pointer-events: none;
   z-index: 2147483646;
   will-change: transform;
+  min-width: 40px;
+  min-height: 40px;
+}
+
+.qr-selection::after {
+  content: "✨ Select any QR code";
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(52, 152, 219, 0.9);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: Arial, sans-serif;
+  white-space: nowrap;
+  pointer-events: none;
 }
 
 .qr-toast {
@@ -22,10 +40,12 @@
 
 .qr-toast.success {
   background-color: #2ecc71;
+  box-shadow: 0 2px 8px rgba(46, 204, 113, 0.3);
 }
 
 .qr-toast.error {
   background-color: #e74c3c;
+  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
 }
 
 .qr-toast.show {
@@ -38,7 +58,8 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(255, 255, 255, 0.07);
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   z-index: 2147483645;
   cursor: crosshair;
   pointer-events: auto;

@@ -25,6 +25,8 @@ browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
     browser.tabs
       .captureVisibleTab(null, { format: "png" })
       .then((dataUrl) => {
+        // Send full screenshot, we'll crop in content script
+        console.log("Full screenshot captured");
         sendResponse(dataUrl);
       })
       .catch((error) => {

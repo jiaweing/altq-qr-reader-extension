@@ -48,78 +48,47 @@ function createSelection(x, y) {
 
 function updateSelection(startX, startY, endX, endY) {
   console.log("updateSelection:", { startX, startY, endX, endY });
-  const scroll = getScrollOffset();
 
-  // Convert coordinates to viewport-relative positions
-  const viewportStartX = startX - scroll.x;
-  const viewportStartY = startY - scroll.y;
-  const viewportEndX = endX - scroll.x;
-  const viewportEndY = endY - scroll.y;
+  // Calculate selection dimensions directly in viewport space
+  const left = Math.round(Math.min(startX, endX));
+  const top = Math.round(Math.min(startY, endY));
+  const right = Math.round(Math.max(startX, endX));
+  const bottom = Math.round(Math.max(startY, endY));
 
-  const left = Math.min(viewportStartX, viewportEndX);
-  const top = Math.min(viewportStartY, viewportEndY);
-  const width = Math.abs(viewportEndX - viewportStartX);
-  const height = Math.abs(viewportEndY - viewportStartY);
-
+  // Set selection element dimensions
   selection.style.left = left + "px";
   selection.style.top = top + "px";
-  selection.style.width = width + "px";
-  selection.style.height = height + "px";
+  selection.style.width = right - left + "px";
+  selection.style.height = bottom - top + "px";
 }
 
-function captureArea() {
+function captureArea(dimensions) {
   console.log("captureArea called");
-  if (!selection) {
-    console.error("captureArea: selection is null");
+  if (!dimensions) {
+    console.error("captureArea: dimensions not provided");
     return;
   }
 
-  // Get selection dimensions from the viewport-relative selection element
-  const rect = selection.getBoundingClientRect();
-  const scroll = getScrollOffset();
-
-  // Create capture rectangle in page coordinates
+  // Keep coordinates in viewport space for capture
   const captureRect = {
-    left: rect.left + scroll.x,
-    top: rect.top + scroll.y,
-    width: rect.width,
-    height: rect.height,
+    x: Math.round(dimensions.rect.left),
+    y: Math.round(dimensions.rect.top),
+    width: Math.round(dimensions.rect.width),
+    height: Math.round(dimensions.rect.height),
   };
 
-  // Ensure the capture area is within page bounds
-  captureRect.left = Math.max(0, captureRect.left);
-  captureRect.top = Math.max(0, captureRect.top);
-  captureRect.width = Math.min(
-    captureRect.width,
-    document.documentElement.scrollWidth - captureRect.left
-  );
-  captureRect.height = Math.min(
-    captureRect.height,
-    document.documentElement.scrollHeight - captureRect.top
-  );
-
-  console.log("Selection dimensions:", captureRect);
+  console.log("Capture coordinates (viewport space):", {
+    captureRect,
+    dimensions,
+  });
 
   try {
     showToast("Reading QR code...", "success");
-
-    // Create canvas and set dimensions
-    const canvas = document.createElement("canvas");
-    canvas.width = captureRect.width;
-    canvas.height = captureRect.height;
-    const ctx = canvas.getContext("2d");
-
-    // Create a screenshot using native browser API
     console.log("Starting screenshot capture");
     browser.runtime
       .sendMessage({
         action: "captureVisibleTab",
-        area: {
-          x: captureRect.left,
-          y: captureRect.top,
-          width: captureRect.width,
-          height: captureRect.height,
-        },
+        area: captureRect,
       })
       .then((imageData) => {
         console.log("Screenshot captured, processing image");
@@ -127,32 +96,113 @@ function captureArea() {
         // Create an image from the screenshot data
         const img = new Image();
         img.onload = () => {
-          // Draw the image onto our canvas
-          ctx.drawImage(img, 0, 0, captureRect.width, captureRect.height);
+          let code = null;
 
-          // Get the image data for QR processing
-          const imageData = ctx.getImageData(
-            0,
-            0,
-            captureRect.width,
-            captureRect.height
-          );
-          console.log("Image data retrieved:", {
-            width: imageData.width,
-            height: imageData.height,
-            dataLength: imageData.data.length,
+          // Create preview toast
+          const previewToast = document.createElement("div");
+          previewToast.className = "qr-toast success";
+
+          // Create small preview canvas
+          const previewCanvas = document.createElement("canvas");
+          const size = 100; // Small fixed size for preview
+          previewCanvas.width = size;
+          previewCanvas.height = size;
+          previewCanvas.style.marginRight = "10px";
+          previewCanvas.style.verticalAlign = "middle";
+          const previewCtx = previewCanvas.getContext("2d");
+
+          // Calculate device pixel ratio based on image vs window size
+          const imageScaleRatio = img.width / window.innerWidth;
+          console.log("Scale ratio:", {
+            imageWidth: img.width,
+            windowWidth: window.innerWidth,
+            ratio: imageScaleRatio,
           });
 
-          // Ensure dimensions match between canvas and image data
-          const width = imageData.width;
-          const height = imageData.height;
+          // Calculate scaled coordinates
+          const scaledX = Math.round(captureRect.x * imageScaleRatio);
+          const scaledY = Math.round(captureRect.y * imageScaleRatio);
+          const scaledWidth = Math.round(captureRect.width * imageScaleRatio);
+          const scaledHeight = Math.round(captureRect.height * imageScaleRatio);
 
-          console.log("Attempting QR code detection");
-          const code = jsQR(
-            new Uint8ClampedArray(imageData.data.buffer),
-            width,
-            height
+          // Create QR detection canvas at full resolution
+          const qrCanvas = document.createElement("canvas");
+          const qrCtx = qrCanvas.getContext("2d");
+          qrCanvas.width = scaledWidth;
+          qrCanvas.height = scaledHeight;
+
+          // Extract the exact region from the full screenshot
+          qrCtx.drawImage(
+            img,
+            scaledX,
+            scaledY,
+            scaledWidth,
+            scaledHeight,
+            0,
+            0,
+            scaledWidth,
+            scaledHeight
           );
+
+          // Get image data for QR detection at full resolution
+          const qrImageData = qrCtx.getImageData(
+            0,
+            0,
+            scaledWidth,
+            scaledHeight
+          );
+
+          // Apply high contrast filter for better QR detection
+          const data = qrImageData.data;
+          for (let i = 0; i < data.length; i += 4) {
+            const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+            const val = avg > 127 ? 255 : 0;
+            data[i] = data[i + 1] = data[i + 2] = val;
+          }
+
+          // Attempt QR detection
+          code = jsQR(data, scaledWidth, scaledHeight);
+
+          // Draw scaled preview
+          previewCtx.imageSmoothingEnabled = true;
+          previewCtx.drawImage(qrCanvas, 0, 0, size, size);
+
+          // If QR code was found, highlight its location with a simple outline
+          if (code) {
+            previewCtx.strokeStyle = "#fff";
+            previewCtx.lineWidth = 2;
+            previewCtx.strokeRect(2, 2, size - 4, size - 4);
+          }
+
+          // Create preview container with flex layout
+          const container = document.createElement("div");
+          container.style.display = "flex";
+          container.style.alignItems = "center";
+
+          // Add the canvas
+          container.appendChild(previewCanvas);
+
+          // Add the QR code data
+          const textContent = document.createElement("div");
+          textContent.style.marginLeft = "10px";
+          textContent.style.flex = "1";
+          textContent.innerHTML = code
+            ? `Found QR Code:<br><strong>${code.data}</strong>`
+            : "No QR code found";
+          container.appendChild(textContent);
+
+          previewToast.appendChild(container);
+          document.body.appendChild(previewToast);
+
+          // Force reflow and show
+          previewToast.offsetHeight;
+          previewToast.classList.add("show");
+
+          // Auto-hide after 5 seconds
+          setTimeout(() => {
+            previewToast.classList.remove("show");
+            setTimeout(() => previewToast.remove(), 300);
+          }, 5000);
 
           if (code) {
             console.log("QR code found:", code.data);
@@ -220,18 +270,16 @@ function handleMouseDown(e) {
   });
   if (!selectionModeActive) return;
   e.preventDefault();
-  const scroll = getScrollOffset();
   isSelecting = true;
-  startX = e.clientX + scroll.x;
-  startY = e.clientY + scroll.y;
+  startX = e.clientX;
+  startY = e.clientY;
   createSelection(startX, startY);
 }
 
 function handleMouseMove(e) {
   if (selectionModeActive && isSelecting && selection) {
     e.preventDefault();
-    const scroll = getScrollOffset();
-    updateSelection(startX, startY, e.clientX + scroll.x, e.clientY + scroll.y);
+    updateSelection(startX, startY, e.clientX, e.clientY);
   }
 }
 
@@ -248,16 +296,36 @@ function handleMouseUp() {
     isSelecting = false;
     selectionModeActive = false;
 
-    // Get dimensions and capture area before removing selection
-    captureArea();
+    // Get dimensions for capture in viewport coordinates
+    const rect = selection.getBoundingClientRect();
 
-    // Remove overlay before capturing to ensure it's not in the screenshot
-    removeOverlay();
+    // Store exact coordinates before cleanup (already in viewport space)
+    const dimensions = {
+      rect: {
+        left: Math.round(rect.left),
+        top: Math.round(rect.top),
+        width: Math.round(rect.width),
+        height: Math.round(rect.height),
+      },
+      // No scroll offset needed since we're using viewport coordinates
+      scroll: { x: 0, y: 0 },
+    };
 
-    // Clean up selection
-    console.log("Cleaning up selection element");
-    selection.remove();
-    selection = null;
+    console.log("Captured dimensions:", dimensions);
+
+    // Small delay to ensure stable rendering before capture
+    setTimeout(() => {
+      // Remove overlay before capturing to ensure it's not in the screenshot
+      removeOverlay();
+
+      // Clean up selection
+      console.log("Cleaning up selection element");
+      selection.remove();
+      selection = null;
+
+      // Start capture after cleanup
+      captureArea(dimensions);
+    }, 50);
   }
 }
 
