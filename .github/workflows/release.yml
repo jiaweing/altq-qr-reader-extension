@@ -46,7 +46,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: dist/chrome/chrome-extension-${{ format('{0}', github.ref_name) }}.zip
-          asset_name: chrome-extension-${{ format('{0}', github.ref_name) }}.zip
+          asset_name: qr-reader-chrome-extension-${{ format('{0}', github.ref_name) }}.zip
           asset_content_type: application/zip
 
       - name: Upload Firefox Extension
@@ -56,5 +56,5 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: dist/firefox/firefox-extension-${{ format('{0}', github.ref_name) }}.zip
-          asset_name: firefox-extension-${{ format('{0}', github.ref_name) }}.zip
+          asset_name: qr-reader-firefox-extension-${{ format('{0}', github.ref_name) }}.zip
           asset_content_type: application/zip
