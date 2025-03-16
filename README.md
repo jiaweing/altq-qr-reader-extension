@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="icon.png" alt="QR Code Reader Logo" width="128" height="128">
+  <img src="src/icon.png" alt="QR Code Reader Logo" width="128" height="128">
   
   # QR Code Reader Extension
 
@@ -79,14 +79,6 @@ The extension requires minimal permissions:
 - `activeTab`: For capturing the selected region
 - `commands`: For keyboard shortcut support
 - `web_accessible_resources`: For loading local font files
-
-## Fonts
-
-The extension uses the Inter font family for its clean, modern typography:
-
-- Inter Medium (500 weight) for UI elements
-- Inter Regular (400 weight) for body text
-- Fonts are locally bundled and served from the extension package
 
 ## Privacy
 

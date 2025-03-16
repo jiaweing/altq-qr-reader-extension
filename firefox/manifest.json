@@ -3,7 +3,7 @@
   "name": "Offline & Local QR Code Reader",
   "version": "1.0.4",
   "icons": {
-    "128": "icon.png"
+    "128": "../src/icon.png"
   },
   "description": "Read QR codes directly from web pages without requiring an internet connection.",
   "applications": {
@@ -24,12 +24,12 @@
   "background": {
     "scripts": ["background.js"]
   },
-  "web_accessible_resources": ["fonts/*.woff2"],
+  "web_accessible_resources": ["../src/fonts/*.woff2"],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["jsQR.js", "content.js"],
-      "css": ["styles.css"]
+      "js": ["../src/jsQR.js", "../src/content.js"],
+      "css": ["../src/styles.css"]
     }
   ]
 }

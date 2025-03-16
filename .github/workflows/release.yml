@@ -12,9 +12,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Build Chrome Extension
+      - name: Copy Shared Files
         run: |
           mkdir -p dist/chrome
+          mkdir -p dist/firefox
+          cp -r src/* dist/chrome/
+          cp -r src/* dist/firefox/
+
+      - name: Build Chrome Extension
+        run: |
           cp -r chromium/* dist/chrome/
           cd dist/chrome
           zip -r chrome-extension-${{ format('{0}', github.ref_name) }}.zip .
@@ -22,7 +28,6 @@ jobs:
 
       - name: Build Firefox Extension
         run: |
-          mkdir -p dist/firefox
           cp -r firefox/* dist/firefox/
           cd dist/firefox
           zip -r firefox-extension-${{ format('{0}', github.ref_name) }}.zip .

@@ -26,20 +26,66 @@ const toast = document.createElement("div");
 toast.className = "qr-toast";
 document.body.appendChild(toast);
 
-function showToast(message, type) {
-  console.log("showToast:", message, type);
-  toast.textContent = message;
-  toast.className = `qr-toast ${type}`;
-  // Force reflow
-  toast.offsetHeight;
-  toast.classList.add("show");
-  setTimeout(() => {
-    toast.classList.remove("show");
-  }, 3000);
+function showToast(message, type, options = {}) {
+  if (options.preview) {
+    // Remove any existing preview toasts only
+    const existingPreviews = document.querySelectorAll(".qr-toast.preview");
+    existingPreviews.forEach((t) => t.remove());
+
+    const previewToast = document.createElement("div");
+    previewToast.className = `qr-toast preview ${type}`;
+
+    // Create preview container with vertical flex layout
+    const container = document.createElement("div");
+    container.style.display = "flex";
+    container.style.flexDirection = "column";
+    container.style.alignItems = "center";
+    container.style.gap = "16px";
+    container.style.padding = "12px";
+    container.style.width = "100%";
+    container.style.maxHeight = "90vh";
+
+    // Add the preview canvas
+    const { canvas, code } = options.preview;
+    container.appendChild(canvas);
+
+    // Add the QR code data
+    const textContent = document.createElement("div");
+    textContent.style.textAlign = "center";
+    textContent.style.width = "100%";
+    textContent.innerHTML = code ? `<strong>${code}</strong>` : message;
+    container.appendChild(textContent);
+
+    previewToast.appendChild(container);
+
+    // Preview toast styles
+    previewToast.style.boxShadow = "0 4px 6px -1px rgba(0, 0, 0, 0.1)";
+    previewToast.style.backdropFilter = "blur(8px)";
+    previewToast.style.border = "1px solid rgba(255, 255, 255, 0.15)";
+
+    document.body.appendChild(previewToast);
+    // Force reflow
+    previewToast.offsetHeight;
+    previewToast.classList.add("show");
+
+    setTimeout(() => {
+      previewToast.classList.remove("show");
+      setTimeout(() => previewToast.remove(), 300);
+    }, 5000);
+  } else {
+    // Use global toast for simple messages
+    toast.textContent = message;
+    toast.className = `qr-toast ${type}`;
+    // Force reflow
+    toast.offsetHeight;
+    toast.classList.add("show");
+    setTimeout(() => {
+      toast.classList.remove("show");
+    }, 3000);
+  }
 }
 
 function createSelection(x, y) {
-  console.log("createSelection:", x, y);
   selection = document.createElement("div");
   selection.className = "qr-selection";
   document.body.appendChild(selection);
@@ -47,8 +93,6 @@ function createSelection(x, y) {
 }
 
 function updateSelection(startX, startY, endX, endY) {
-  console.log("updateSelection:", { startX, startY, endX, endY });
-
   // Calculate selection dimensions directly in viewport space
   const left = Math.round(Math.min(startX, endX));
   const top = Math.round(Math.min(startY, endY));
@@ -63,7 +107,6 @@ function updateSelection(startX, startY, endX, endY) {
 }
 
 function captureArea(dimensions) {
-  console.log("captureArea called");
   if (!dimensions) {
     console.error("captureArea: dimensions not provided");
     return;
@@ -77,67 +120,40 @@ function captureArea(dimensions) {
     height: Math.round(dimensions.rect.height),
   };
 
-  console.log("Capture coordinates (viewport space):", {
-    captureRect,
-    dimensions,
-  });
-
   try {
-    showToast("Reading QR code...", "success");
-    console.log("Starting screenshot capture");
-    chrome.runtime.sendMessage(
-      {
+    showToast("Reading QR code...", "");
+    browser.runtime
+      .sendMessage({
         action: "captureVisibleTab",
         area: captureRect,
-      },
-      (imageData) => {
-        if (chrome.runtime.lastError) {
-          console.error("Screenshot error:", chrome.runtime.lastError);
-          showToast("Error capturing area", "error");
-          return;
-        }
-
-        console.log("Screenshot captured, processing image");
-
+      })
+      .then((imageData) => {
         // Create an image from the screenshot data
         const img = new Image();
         img.onload = () => {
-          let code = null;
-
-          // Create preview toast
-          const previewToast = document.createElement("div");
-          previewToast.className = "qr-toast success";
-
-          // Create small preview canvas
+          // Create preview canvas
           const previewCanvas = document.createElement("canvas");
-          const size = 100; // Small fixed size for preview
+          const size = 180;
           previewCanvas.width = size;
           previewCanvas.height = size;
-          previewCanvas.style.marginRight = "10px";
+          previewCanvas.style.borderRadius = "8px";
           previewCanvas.style.verticalAlign = "middle";
           const previewCtx = previewCanvas.getContext("2d");
 
-          // Calculate device pixel ratio based on image vs window size
+          // Calculate coordinates and prepare QR detection
           const imageScaleRatio = img.width / window.innerWidth;
-          console.log("Scale ratio:", {
-            imageWidth: img.width,
-            windowWidth: window.innerWidth,
-            ratio: imageScaleRatio,
-          });
-
-          // Calculate scaled coordinates
           const scaledX = Math.round(captureRect.x * imageScaleRatio);
           const scaledY = Math.round(captureRect.y * imageScaleRatio);
           const scaledWidth = Math.round(captureRect.width * imageScaleRatio);
           const scaledHeight = Math.round(captureRect.height * imageScaleRatio);
 
-          // Create QR detection canvas at full resolution
+          // Create QR detection canvas
           const qrCanvas = document.createElement("canvas");
           const qrCtx = qrCanvas.getContext("2d");
           qrCanvas.width = scaledWidth;
           qrCanvas.height = scaledHeight;
 
-          // Extract the exact region from the full screenshot
+          // Extract region and prepare for QR detection
           qrCtx.drawImage(
             img,
             scaledX,
@@ -149,8 +165,6 @@ function captureArea(dimensions) {
             scaledWidth,
             scaledHeight
           );
-
-          // Get image data for QR detection at full resolution
           const qrImageData = qrCtx.getImageData(
             0,
             0,
@@ -158,7 +172,7 @@ function captureArea(dimensions) {
             scaledHeight
           );
 
-          // Apply high contrast filter for better QR detection
+          // Apply high contrast filter
           const data = qrImageData.data;
           for (let i = 0; i < data.length; i += 4) {
             const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
@@ -166,74 +180,71 @@ function captureArea(dimensions) {
             data[i] = data[i + 1] = data[i + 2] = val;
           }
 
-          // Attempt QR detection
-          code = jsQR(data, scaledWidth, scaledHeight);
+          // Detect QR code
+          let code = jsQR(data, scaledWidth, scaledHeight);
 
-          // Draw scaled preview
+          // Draw preview
           previewCtx.imageSmoothingEnabled = true;
           previewCtx.drawImage(qrCanvas, 0, 0, size, size);
 
-          // If QR code was found, highlight its location with a simple outline
+          // Draw QR code polygon if found
           if (code) {
-            previewCtx.strokeStyle = "#fff";
+            const scaleX = size / scaledWidth;
+            const scaleY = size / scaledHeight;
+
+            previewCtx.strokeStyle = "#00ff00";
             previewCtx.lineWidth = 2;
-            previewCtx.strokeRect(2, 2, size - 4, size - 4);
+            previewCtx.beginPath();
+            previewCtx.moveTo(
+              code.location.topLeftCorner.x * scaleX,
+              code.location.topLeftCorner.y * scaleY
+            );
+            previewCtx.lineTo(
+              code.location.topRightCorner.x * scaleX,
+              code.location.topRightCorner.y * scaleY
+            );
+            previewCtx.lineTo(
+              code.location.bottomRightCorner.x * scaleX,
+              code.location.bottomRightCorner.y * scaleY
+            );
+            previewCtx.lineTo(
+              code.location.bottomLeftCorner.x * scaleX,
+              code.location.bottomLeftCorner.y * scaleY
+            );
+            previewCtx.closePath();
+            previewCtx.stroke();
           }
 
-          // Create preview container with flex layout
-          const container = document.createElement("div");
-          container.style.display = "flex";
-          container.style.alignItems = "center";
-
-          // Add the canvas
-          container.appendChild(previewCanvas);
-
-          // Add the QR code data
-          const textContent = document.createElement("div");
-          textContent.style.marginLeft = "10px";
-          textContent.style.flex = "1";
-          textContent.innerHTML = code
-            ? `Found QR Code:<br><strong>${code.data}</strong>`
-            : "No QR code found";
-          container.appendChild(textContent);
-
-          previewToast.appendChild(container);
-          document.body.appendChild(previewToast);
-
-          // Force reflow and show
-          previewToast.offsetHeight;
-          previewToast.classList.add("show");
-
-          // Auto-hide after 5 seconds
-          setTimeout(() => {
-            previewToast.classList.remove("show");
-            setTimeout(() => previewToast.remove(), 300);
-          }, 5000);
+          // Show preview toast
+          showToast("No QR code found", code ? "" : "error", {
+            preview: {
+              canvas: previewCanvas,
+              code: code?.data,
+            },
+          });
 
           if (code) {
             console.log("QR code found:", code.data);
-            chrome.runtime.sendMessage(
-              {
+            browser.runtime
+              .sendMessage({
                 action: "copyToClipboard",
                 text: code.data,
-              },
-              (response) => {
+              })
+              .then((response) => {
                 console.log("Clipboard response:", response);
-                if (response?.success) {
-                  showToast("QR code copied to clipboard!", "success");
-                } else {
-                  showToast("Failed to copy QR code", "error");
-                }
-              }
-            );
-          } else {
-            console.log("No QR code found in selection");
-            showToast("No QR code found in selection", "error");
+              })
+              .catch((err) => {
+                console.error("Clipboard operation failed:", err);
+                showToast("Failed to copy QR code", "error");
+              });
           }
         };
         img.src = imageData;
-      }
-    );
+      })
+      .catch((err) => {
+        console.error("Screenshot capture error:", err);
+        showToast("Error capturing area", "error");
+      });
   } catch (error) {
     console.error("captureArea error:", error);
     showToast("Error processing QR code", "error");
@@ -241,16 +252,10 @@ function captureArea(dimensions) {
 }
 
 // Listen for keyboard shortcut command
-chrome.runtime.onMessage.addListener((request) => {
-  console.log("Received message:", request);
+browser.runtime.onMessage.addListener((request) => {
   if (request.command === "activate-qr-select") {
-    console.log("Activating QR selection mode");
     selectionModeActive = true;
     createOverlay();
-    showToast(
-      "QR selection mode activated - Click and drag to select area",
-      "success"
-    );
   }
 });
 
@@ -263,11 +268,6 @@ function getScrollOffset() {
 }
 
 function handleMouseDown(e) {
-  console.log("mousedown event:", {
-    selectionModeActive,
-    x: e.clientX,
-    y: e.clientY,
-  });
   if (!selectionModeActive) return;
   e.preventDefault();
   isSelecting = true;
@@ -285,14 +285,7 @@ function handleMouseMove(e) {
 
 // Add event listeners to overlay instead of document
 function handleMouseUp() {
-  console.log("mouseup event:", {
-    selectionModeActive,
-    isSelecting,
-    hasSelection: !!selection,
-  });
-
   if (selectionModeActive && isSelecting && selection) {
-    console.log("Starting capture process");
     isSelecting = false;
     selectionModeActive = false;
 
@@ -311,15 +304,12 @@ function handleMouseUp() {
       scroll: { x: 0, y: 0 },
     };
 
-    console.log("Captured dimensions:", dimensions);
-
     // Small delay to ensure stable rendering before capture
     setTimeout(() => {
       // Remove overlay before capturing to ensure it's not in the screenshot
       removeOverlay();
 
       // Clean up selection
-      console.log("Cleaning up selection element");
       selection.remove();
       selection = null;
 
@@ -366,7 +356,6 @@ function removeOverlay() {
 // Disable selection mode on escape key
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape" && selectionModeActive) {
-    console.log("Escape key pressed, canceling selection");
     selectionModeActive = false;
     removeOverlay();
     if (selection) {
