@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Alt+Q: Offline & Local QR Code Reader",
-  "version": "1.0.4",
+  "version": "1.0.8",
   "icons": {
     "128": "icon.png"
   },
