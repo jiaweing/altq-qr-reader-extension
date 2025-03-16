@@ -12,23 +12,35 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Copy Shared Files
+      - name: Create Dist Directories
         run: |
           mkdir -p dist/chrome
           mkdir -p dist/firefox
-          cp -r src/* dist/chrome/
-          cp -r src/* dist/firefox/
+          mkdir -p dist/chrome/src
+          mkdir -p dist/firefox/src
 
-      - name: Build Chrome Extension
+      - name: Copy and Prepare Chrome Files
         run: |
+          cp -r src/* dist/chrome/src/
           cp -r chromium/* dist/chrome/
+          # Fix paths in manifest for packaging
+          sed -i 's/"..\/src\//"src\//g' dist/chrome/manifest.json
+
+      - name: Copy and Prepare Firefox Files
+        run: |
+          cp -r src/* dist/firefox/src/
+          cp -r firefox/* dist/firefox/
+          # Fix paths in manifest for packaging
+          sed -i 's/"..\/src\//"src\//g' dist/firefox/manifest.json
+
+      - name: Create Chrome Package
+        run: |
           cd dist/chrome
           zip -r chrome-extension-${{ format('{0}', github.ref_name) }}.zip .
           cd ../..
 
-      - name: Build Firefox Extension
+      - name: Create Firefox Package
         run: |
-          cp -r firefox/* dist/firefox/
           cd dist/firefox
           zip -r firefox-extension-${{ format('{0}', github.ref_name) }}.zip .
           cd ../..
