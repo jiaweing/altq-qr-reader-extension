@@ -1,7 +1,7 @@
 <div align="center">
   <img src="src/icon.png" alt="QR Code Reader Logo" width="128" height="128">
   
-  # QR Code Reader Extension
+  # Alt+Q: Offline & Local QR Code Reader Browser Extension
 
   <a href="https://chromewebstore.google.com/detail/mkmmdabdljidjfkmdgklmgjfpkjmgplj" style="margin: 0 10px;">
     <img src="https://developer.chrome.com/static/docs/webstore/branding/image/UV4C4ybeBTsZt43U4xis.png" alt="Available in the Chrome Web Store" height="58">
