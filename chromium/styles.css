@@ -43,13 +43,10 @@
   --background: rgba(255, 255, 255, 0.98);
 }
 
-* {
+.qr-selection {
   font-family: "Inter", system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-.qr-selection {
   position: fixed;
   border: 2px solid var(--selection-border);
   background-color: var(--selection-bg);
@@ -80,7 +77,6 @@
   padding: 6px 12px;
   border-radius: 6px;
   font-size: 13px;
-  font-family: "Inter", system-ui, -apple-system, sans-serif;
   white-space: nowrap;
   pointer-events: none;
   font-weight: 500;
@@ -98,14 +94,17 @@
   }
 }
 
-.qr-toast {
+/* Common toast styles */
+[class*="qr-toast"] {
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   position: fixed;
   bottom: 24px;
   right: 24px;
   padding: 8px;
   border-radius: var(--radius);
   color: var(--toast-text);
-  font-family: "Inter", system-ui, -apple-system, sans-serif;
   z-index: 2147483647;
   opacity: 0;
   transform: translateY(20px) scale(0.95);
@@ -140,7 +139,16 @@
   color: white;
 }
 
+.qr-text-content {
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 .qr-overlay {
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   position: fixed;
   top: 0;
   left: 0;

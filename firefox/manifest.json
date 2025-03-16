@@ -14,11 +14,17 @@
       "description": "Activate QR code selection"
     }
   },
-  "permissions": ["clipboardWrite", "activeTab", "commands"],
+  "permissions": ["clipboardWrite", "activeTab"],
   "background": {
-    "scripts": ["background.js"]
+    "scripts": ["background.js"],
+    "type": "module"
   },
-  "web_accessible_resources": ["fonts/*.woff2"],
+  "web_accessible_resources": [
+    {
+      "resources": ["fonts/*.woff2"],
+      "matches": ["<all_urls>"]
+    }
+  ],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],

@@ -5,14 +5,23 @@
   "icons": {
     "128": "icon.png"
   },
+  "action": {},
   "description": "Read QR codes directly from web pages without requiring an internet connection.",
-  "permissions": ["clipboardWrite", "activeTab", "commands"],
+  "commands": {
+    "activate-qr-select": {
+      "suggested_key": {
+        "default": "Alt+Q"
+      },
+      "description": "Activate QR code selection"
+    }
+  },
+  "permissions": ["clipboardWrite", "activeTab"],
   "background": {
     "service_worker": "background.js"
   },
   "web_accessible_resources": [
     {
-      "resources": ["fonts/*.woff2"],
+      "resources": ["fonts/*"],
       "matches": ["<all_urls>"]
     }
   ],
@@ -22,13 +31,5 @@
       "js": ["jsQR.js", "content.js"],
       "css": ["styles.css"]
     }
-  ],
-  "commands": {
-    "activate-qr-select": {
-      "suggested_key": {
-        "default": "Alt+Q"
-      },
-      "description": "Activate QR code selection"
-    }
-  }
+  ]
 }

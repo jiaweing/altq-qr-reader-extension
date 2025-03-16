@@ -122,7 +122,7 @@ function captureArea(dimensions) {
   };
 
   try {
-    browser.runtime
+    chrome.runtime
       .sendMessage({
         action: "captureVisibleTab",
         area: captureRect,
@@ -225,7 +225,7 @@ function captureArea(dimensions) {
 
           if (code) {
             console.log("QR code found:", code.data);
-            browser.runtime
+            chrome.runtime
               .sendMessage({
                 action: "copyToClipboard",
                 text: code.data,
@@ -252,7 +252,7 @@ function captureArea(dimensions) {
 }
 
 // Listen for keyboard shortcut command
-browser.runtime.onMessage.addListener((request) => {
+chrome.runtime.onMessage.addListener((request) => {
   if (request.command === "activate-qr-select") {
     selectionModeActive = true;
     createOverlay();
