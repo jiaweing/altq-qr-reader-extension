@@ -2,6 +2,9 @@
   "manifest_version": 3,
   "name": "QR Code Reader",
   "version": "1.0",
+  "icons": {
+    "128": "icon.png"
+  },
   "description": "Offline QR code reader with region selection",
   "permissions": ["clipboardWrite", "activeTab", "commands"],
   "background": {

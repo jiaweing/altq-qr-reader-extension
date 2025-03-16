@@ -1,4 +1,8 @@
-# QR Code Reader Extension
+<div align="center">
+  <img src="icon.png" alt="QR Code Reader Logo" width="128" height="128">
+  
+  # QR Code Reader Extension
+</div>
 
 A powerful browser extension that allows you to read QR codes directly from web pages without requiring an internet connection. Supports both Firefox and Chromium-based browsers (Chrome, Edge, Brave). Simply select any area of the webpage containing a QR code, and the extension will decode it instantly.
 
