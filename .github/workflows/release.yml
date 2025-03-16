@@ -1,9 +1,6 @@
 name: Release Extension
 
-on:
-  push:
-    tags:
-      - "v*" # Trigger on version tags like v1.0.0
+on: workflow_dispatch
 
 jobs:
   build:
