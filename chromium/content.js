@@ -54,7 +54,7 @@ function showToast(message, type, options = {}) {
     textContent.className = "qr-text-content";
     textContent.style.textAlign = "center";
     textContent.style.width = "100%";
-    textContent.innerHTML = code ? `${code}` : message;
+    textContent.textContent = code ? `${code}` : message;
     container.appendChild(textContent);
 
     previewToast.appendChild(container);
