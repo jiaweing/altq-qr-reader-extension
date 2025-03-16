@@ -1,0 +1,53 @@
+name: Release Extension
+
+on:
+  push:
+    tags:
+      - "v*" # Trigger on version tags like v1.0.0
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Chrome Extension
+        run: |
+          mkdir -p dist/chrome
+          cp -r chromium/* dist/chrome/
+          cd dist/chrome
+          zip -r chrome-extension-${{ format('{0}', github.ref_name) }}.zip .
+          cd ../..
+
+      - name: Build Firefox Extension
+        run: |
+          mkdir -p dist/firefox
+          cp -r firefox/* dist/firefox/
+          cd dist/firefox
+          zip -r firefox-extension-${{ format('{0}', github.ref_name) }}.zip .
+          cd ../..
+
+      - name: Upload Release Assets
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: dist/chrome/chrome-extension.zip
+          asset_name: chrome-extension-${{ format('{0}', github.ref_name) }}.zip
+          asset_content_type: application/zip
+
+      - name: Upload Release Assets
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: dist/firefox/firefox-extension.zip
+          asset_name: firefox-extension-${{ format('{0}', github.ref_name) }}.zip
+          asset_content_type: application/zip

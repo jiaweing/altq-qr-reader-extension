@@ -1,0 +1,202 @@
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/Inter-Regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("fonts/Inter-Medium.woff2") format("woff2");
+}
+
+:root {
+  --primary: #6366f1;
+  --primary-hover: #4f46e5;
+  --success: #10b981;
+  --error: #ef4444;
+  --background: rgba(255, 255, 255, 0.98);
+  --text: #1e293b;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --radius: 12px;
+  --transition: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.qr-selection {
+  position: fixed;
+  border: 2px solid var(--primary);
+  background-color: rgba(99, 102, 241, 0.15);
+  pointer-events: none;
+  z-index: 2147483646;
+  will-change: transform;
+  min-width: 40px;
+  min-height: 40px;
+  border-radius: var(--radius);
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+  transition: all 0.2s var(--transition);
+  backdrop-filter: blur(2px);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.qr-selection:hover {
+  backdrop-filter: blur(4px);
+  background-color: rgba(99, 102, 241, 0.2);
+}
+
+.qr-selection::after {
+  content: "✨ Read QR code";
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--primary);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  white-space: nowrap;
+  pointer-events: none;
+  font-weight: 500;
+  box-shadow: var(--shadow);
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-4px);
+  }
+}
+
+.qr-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  padding: 16px 24px;
+  border-radius: var(--radius);
+  color: white;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  z-index: 2147483647;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.3s var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 320px;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.qr-toast.show {
+  opacity: 1;
+  transform: translateY(0);
+  animation: toast-enter 0.4s var(--transition);
+}
+
+@keyframes toast-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.qr-toast.success {
+  background-color: rgba(16, 185, 129, 0.9);
+  box-shadow: var(--shadow);
+}
+
+.qr-toast.error {
+  background-color: rgba(239, 68, 68, 0.9);
+  box-shadow: var(--shadow);
+}
+
+.qr-toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.qr-toast::before {
+  content: "";
+  width: 20px;
+  height: 20px;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.qr-toast.success::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M9.00039 16.1716L4.82843 12L3.41421 13.4142L9.00039 19.0004L21.0004 7.00039L19.5862 5.58618L9.00039 16.1716Z'%3E%3C/path%3E%3C/svg%3E");
+}
+
+.qr-toast.error::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12.0007 10.5865L16.9504 5.63672L18.3646 7.05093L13.4149 12.0007L18.3646 16.9504L16.9504 18.3646L12.0007 13.4149L7.05093 18.3646L5.63672 16.9504L10.5865 12.0007L5.63672 7.05093L7.05093 5.63672L12.0007 10.5865Z'%3E%3C/path%3E%3C/svg%3E");
+}
+
+.qr-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  z-index: 2147483645;
+  cursor: crosshair;
+  pointer-events: auto;
+  touch-action: none;
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+  backdrop-filter: blur(2px);
+  transition: all 0.2s var(--transition);
+}
+
+.qr-overlay:hover {
+  backdrop-filter: blur(4px);
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.qr-overlay:active {
+  cursor: grabbing;
+  backdrop-filter: blur(6px);
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.qr-overlay::before {
+  content: "Click and drag to select QR code";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: var(--shadow);
+  opacity: 0;
+  transition: opacity 0.3s var(--transition);
+}
+
+.qr-overlay:hover::before {
+  opacity: 1;
+}

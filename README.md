@@ -1,6 +1,6 @@
-# QR Code Reader Extension for Firefox
+# QR Code Reader Extension
 
-A powerful Firefox extension that allows you to read QR codes directly from web pages without requiring an internet connection. Simply select any area of the webpage containing a QR code, and the extension will decode it instantly.
+A powerful browser extension that allows you to read QR codes directly from web pages without requiring an internet connection. Supports both Firefox and Chromium-based browsers (Chrome, Edge, Brave). Simply select any area of the webpage containing a QR code, and the extension will decode it instantly.
 
 ## Features
 
@@ -12,13 +12,60 @@ A powerful Firefox extension that allows you to read QR codes directly from web 
 - 🛡️ **Privacy-Focused**: No data transmission - all processing happens locally
 - 🎯 **Precise Selection**: Visual overlay for accurate QR code targeting
 
+## Releases
+
+Official releases are available on GitHub. Each release includes pre-built extension packages for both Firefox and Chromium-based browsers.
+
+### Downloading Releases
+
+1. Go to the [Releases page](https://github.com/yourusername/qr-reader-extension/releases)
+2. Download the appropriate zip file for your browser:
+   - `chrome-extension-vX.X.X.zip` for Chromium browsers (Chrome, Edge, Brave)
+   - `firefox-extension-vX.X.X.zip` for Firefox
+
+### Installing from Release Packages
+
+#### Firefox
+
+1. Download the Firefox release package
+2. Extract the zip file
+3. Open Firefox and navigate to `about:debugging`
+4. Click "This Firefox" in the left sidebar
+5. Click "Load Temporary Add-on"
+6. Select the `manifest.json` file from the extracted folder
+
+#### Chromium (Chrome, Edge, Brave)
+
+1. Download the Chromium release package
+2. Extract the zip file
+3. Open Chrome/Edge/Brave and navigate to `chrome://extensions`
+4. Enable "Developer mode" in the top right corner
+5. Click "Load unpacked"
+6. Select the extracted folder
+
+### Version Compatibility
+
+- Always use the latest stable release
+- Release packages are tested on the latest browser versions
+- Older browser versions may not be supported
+
 ## Installation
+
+### Firefox
 
 1. Download the extension files
 2. Open Firefox and navigate to `about:debugging`
 3. Click "This Firefox" in the left sidebar
 4. Click "Load Temporary Add-on"
-5. Select the `manifest.json` file from the extension directory
+5. Select the `manifest.json` file from the firefox directory
+
+### Chromium (Chrome, Edge, Brave)
+
+1. Download the extension files
+2. Open Chrome/Edge/Brave and navigate to `chrome://extensions`
+3. Enable "Developer mode" in the top right corner
+4. Click "Load unpacked"
+5. Select the chromium directory
 
 ## Usage
 
@@ -36,7 +83,7 @@ A powerful Firefox extension that allows you to read QR codes directly from web 
 ## Technologies Used
 
 - `jsQR.js` - QR code detection and decoding
-- Firefox WebExtensions API
+- Browser WebExtensions API (compatible with Firefox and Chromium)
 - Inter font (Medium and Regular weights) - Clean UI typography
 - Pure JavaScript with no external dependencies for core functionality
 

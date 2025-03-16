@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "QR Code Reader",
+  "version": "1.0",
+  "description": "Offline QR code reader with region selection",
+  "permissions": ["clipboardWrite", "activeTab", "commands"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["fonts/*.woff2"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["jsQR.js", "content.js"],
+      "css": ["styles.css"]
+    }
+  ],
+  "commands": {
+    "activate-qr-select": {
+      "suggested_key": {
+        "default": "Alt+Q"
+      },
+      "description": "Activate QR code selection"
+    }
+  }
+}
