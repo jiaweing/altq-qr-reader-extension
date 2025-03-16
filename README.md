@@ -18,30 +18,10 @@ Official releases are available on GitHub. Each release includes pre-built exten
 
 ### Downloading Releases
 
-1. Go to the [Releases page](https://github.com/yourusername/qr-reader-extension/releases)
+1. Go to the [Releases page](https://github.com/jiaweing/qr-reader-extension/releases)
 2. Download the appropriate zip file for your browser:
    - `chrome-extension-vX.X.X.zip` for Chromium browsers (Chrome, Edge, Brave)
    - `firefox-extension-vX.X.X.zip` for Firefox
-
-### Installing from Release Packages
-
-#### Firefox
-
-1. Download the Firefox release package
-2. Extract the zip file
-3. Open Firefox and navigate to `about:debugging`
-4. Click "This Firefox" in the left sidebar
-5. Click "Load Temporary Add-on"
-6. Select the `manifest.json` file from the extracted folder
-
-#### Chromium (Chrome, Edge, Brave)
-
-1. Download the Chromium release package
-2. Extract the zip file
-3. Open Chrome/Edge/Brave and navigate to `chrome://extensions`
-4. Enable "Developer mode" in the top right corner
-5. Click "Load unpacked"
-6. Select the extracted folder
 
 ### Version Compatibility
 
@@ -49,7 +29,7 @@ Official releases are available on GitHub. Each release includes pre-built exten
 - Release packages are tested on the latest browser versions
 - Older browser versions may not be supported
 
-## Installation
+## Development
 
 ### Firefox
 
