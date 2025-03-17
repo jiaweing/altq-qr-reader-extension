@@ -60,17 +60,15 @@
   background-color: var(--altq-selection-bg);
   pointer-events: none;
   z-index: 2147483646;
-  will-change: transform;
   min-width: 40px;
   min-height: 40px;
   border-radius: var(--altq-radius);
   box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
-  transition: all 0.2s var(--altq-transition);
-  backdrop-filter: blur(2px);
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
 }
 
 .qr-selection:hover {
-  backdrop-filter: blur(4px);
   background-color: var(--altq-selection-hover);
 }
 
@@ -115,9 +113,8 @@
   color: var(--altq-toast-text);
   z-index: 2147483647;
   opacity: 0;
-  transform: translateY(20px) scale(0.95);
+  transform: translateY(20px);
   width: 280px;
-  transition: all 0.3s var(--altq-transition);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -132,7 +129,7 @@
 
 .qr-toast.show {
   opacity: 1;
-  transform: translateY(0) scale(1);
+  transform: translateY(0);
 }
 
 .qr-toast.success {
@@ -168,20 +165,16 @@
   cursor: crosshair;
   pointer-events: auto;
   touch-action: none;
-  transform: translate3d(0, 0, 0);
   will-change: transform;
-  backdrop-filter: blur(2px);
-  transition: all 0.2s var(--altq-transition);
+  transform: translate3d(0, 0, 0);
 }
 
 .qr-overlay:hover {
-  backdrop-filter: blur(4px);
   background-color: var(--altq-overlay-hover);
 }
 
 .qr-overlay:active {
   cursor: grabbing;
-  backdrop-filter: blur(6px);
   background-color: var(--altq-overlay-active);
 }
 
