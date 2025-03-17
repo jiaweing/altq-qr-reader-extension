@@ -6,11 +6,16 @@ let startY = 0;
 let isSelecting = false;
 let selectionModeActive = false;
 
+// Create root container for all UI elements
+const rootContainer = document.createElement("div");
+rootContainer.className = "altq-root";
+document.body.appendChild(rootContainer);
+
 // Create overlay element
 function createOverlay() {
   overlay = document.createElement("div");
   overlay.className = "qr-overlay";
-  document.body.appendChild(overlay);
+  rootContainer.appendChild(overlay);
 }
 
 // Remove overlay element
@@ -24,7 +29,7 @@ function removeOverlay() {
 // Create toast element for notifications
 const toast = document.createElement("div");
 toast.className = "qr-toast";
-document.body.appendChild(toast);
+rootContainer.appendChild(toast);
 
 function showToast(message, type, options = {}) {
   if (options.preview) {
@@ -64,7 +69,7 @@ function showToast(message, type, options = {}) {
     previewToast.style.backdropFilter = "blur(8px)";
     previewToast.style.border = "1px solid rgba(255, 255, 255, 0.15)";
 
-    document.body.appendChild(previewToast);
+    rootContainer.appendChild(previewToast);
     // Force reflow
     previewToast.offsetHeight;
     previewToast.classList.add("show");
@@ -89,7 +94,7 @@ function showToast(message, type, options = {}) {
 function createSelection(x, y) {
   selection = document.createElement("div");
   selection.className = "qr-selection";
-  document.body.appendChild(selection);
+  rootContainer.appendChild(selection);
   updateSelection(x, y, x, y);
 }
 
@@ -385,7 +390,7 @@ function removeEventListeners() {
 function createOverlay() {
   overlay = document.createElement("div");
   overlay.className = "qr-overlay";
-  document.body.appendChild(overlay);
+  rootContainer.appendChild(overlay);
   setupEventListeners();
 }
 
