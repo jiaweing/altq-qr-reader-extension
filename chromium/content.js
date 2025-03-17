@@ -172,16 +172,61 @@ function captureArea(dimensions) {
             scaledHeight
           );
 
-          // Apply high contrast filter
+          // Enhanced image processing for colored QR codes
           const data = qrImageData.data;
           for (let i = 0; i < data.length; i += 4) {
-            const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-            const val = avg > 127 ? 255 : 0;
-            data[i] = data[i + 1] = data[i + 2] = val;
+            // Extract RGB channels
+            const r = data[i];
+            const g = data[i + 1];
+            const b = data[i + 2];
+
+            // Calculate luminance using perceptual weights
+            const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
+
+            // Apply adaptive thresholding with multiple passes
+            let threshold = 127;
+            if (luminance < threshold - 50) {
+              // Definitely dark
+              data[i] = data[i + 1] = data[i + 2] = 0;
+            } else if (luminance > threshold + 50) {
+              // Definitely light
+              data[i] = data[i + 1] = data[i + 2] = 255;
+            } else {
+              // Edge case - check local contrast
+              const localAvg = (r + g + b) / 3;
+              data[i] =
+                data[i + 1] =
+                data[i + 2] =
+                  localAvg > threshold ? 255 : 0;
+            }
           }
 
-          // Detect QR code
-          let code = jsQR(data, scaledWidth, scaledHeight);
+          // Multiple detection attempts with different parameters
+          let code = null;
+          const attempts = [
+            () => jsQR(data, scaledWidth, scaledHeight),
+            () =>
+              jsQR(data, scaledWidth, scaledHeight, {
+                inversionAttempts: "attemptBoth",
+              }),
+            // Try with increased contrast for faded codes
+            () => {
+              const contrastData = new Uint8ClampedArray(data);
+              for (let i = 0; i < contrastData.length; i += 4) {
+                const val = contrastData[i];
+                contrastData[i] =
+                  contrastData[i + 1] =
+                  contrastData[i + 2] =
+                    val < 127 ? 0 : 255;
+              }
+              return jsQR(contrastData, scaledWidth, scaledHeight);
+            },
+          ];
+
+          for (const attempt of attempts) {
+            code = attempt();
+            if (code) break;
+          }
 
           // Draw preview
           previewCtx.imageSmoothingEnabled = true;
